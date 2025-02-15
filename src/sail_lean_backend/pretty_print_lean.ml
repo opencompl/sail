@@ -694,7 +694,8 @@ let doc_funcl_init global (FCL_aux (FCL_funcl (id, pexp), annot)) =
            match pat_is_plain_binder env pat with
            | Some (Some id, _) -> (id, typ)
            | Some (None, _) -> (Id_aux (Id "x", l), typ) (* TODO fresh name or wildcard instead of x *)
-           | _ -> failwith "Argument pattern not translatable yet."
+           | _ -> (Id_aux (Id "TODO_ARG_PATTERN", Unknown), Typ_aux (Typ_id (Id_aux (Id "TODO_ARG_PATTERN", Unknown)), Unknown))
+                  (* failwith "Argument pattern not translatable yet." *)
        )
   in
   let ctx = context_init env global in
