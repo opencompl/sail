@@ -52,7 +52,7 @@ $include <arith.sail>
 val eq_string = pure {
    lem: "eq",
    coq: "generic_eq",
-   lean: "Eq",
+   lean: "BEq.beq",
    _: "eq_string"} : (string, string) -> bool
 
 overload operator == = {eq_string}
@@ -67,12 +67,12 @@ val dec_str = pure {
   lean: "Int.repr",
   _: "dec_str"} : int -> string
 
-val hex_str = pure "hex_str" : int -> string
+val hex_str = pure { lean: "Int.toHex", _: "hex_str" } : int -> string
 
-val hex_str_upper = pure "hex_str_upper" : int -> string
+val hex_str_upper = pure { lean: "Int.toHexUpper", _: "hex_str_upper"} : int -> string
 
 val bits_str = pure {
-   lean: "BitVec.toHex",
+   lean: "BitVec.toFormatted",
    _: "string_of_bits"} : forall 'n. bitvector('n, dec) -> string
 
 val concat_str_bits : forall 'n. (string, bitvector('n, dec)) -> string

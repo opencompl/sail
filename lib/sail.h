@@ -147,7 +147,6 @@ bool EQUAL(sail_string)(const_sail_string, const_sail_string);
 void concat_str(sail_string *stro, const_sail_string str1, const_sail_string str2);
 bool string_startswith(const_sail_string s, const_sail_string prefix);
 
-                       
 /* ***** Sail integers ***** */
 
 typedef int64_t mach_int;
@@ -352,7 +351,7 @@ void vector_subrange_inc_lbits(lbits *rop,
 			       const lbits op,
 			       const sail_int n_mpz,
 			       const sail_int m_mpz);
-                     
+
 void sail_truncate(lbits *rop, const lbits op, const sail_int len);
 void sail_truncateLSB(lbits *rop, const lbits op, const sail_int len);
 
@@ -491,6 +490,10 @@ void decimal_string_of_lbits(sail_string *str, const lbits op);
 void decimal_string_of_fbits(sail_string *str, const fbits op);
 
 /* ***** Mapping support ***** */
+
+void parse_dec_bits(lbits *res, const mpz_t n, const char *dec);
+
+bool valid_dec_bits(const mpz_t n, const char *dec);
 
 void parse_hex_bits(lbits *stro, const mpz_t n, const_sail_string str);
 

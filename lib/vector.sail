@@ -60,7 +60,7 @@ val eq_bits = pure {
   interpreter: "eq_list",
   lem: "eq_vec",
   coq: "eq_vec",
-  lean: "Eq",
+  lean: "BEq.beq",
   _: "eq_bits"
 } : forall 'n. (bits('n), bits('n)) -> bool
 
@@ -70,7 +70,7 @@ val neq_bits = pure {
   lem: "neq_vec",
   coq: "neq_vec",
   c: "neq_bits",
-  lean: "Ne"
+  lean: "bne"
 } : forall 'n. (bits('n), bits('n)) -> bool
 
 function neq_bits(x, y) = not_bool(eq_bits(x, y))
@@ -88,10 +88,14 @@ val vector_length = pure {
   interpreter: "length",
   lem: "length_list",
   coq: "vec_length",
+  lean: "Vector.length",
   _: "length"
 } : forall 'n ('a : Type). vector('n, 'a) -> int('n)
 
-val vector_init = pure "vector_init" : forall 'n ('a : Type), 'n >= 0. (implicit('n), 'a) -> vector('n, 'a)
+val vector_init = pure {
+  lean: "vectorInit",
+  _: "vector_init"
+} : forall 'n ('a : Type), 'n >= 0. (implicit('n), 'a) -> vector('n, 'a)
 
 overload length = {bitvector_length, vector_length}
 
@@ -159,7 +163,7 @@ val bitvector_concat = pure {
   interpreter: "append",
   lem: "concat_vec",
   coq: "concat_vec",
-  lean: "BitVec.append",
+  lean: "_lean_app",
    _: "append"
 } : forall 'n 'm.
   (bits('n), bits('m)) -> bits('n + 'm)
@@ -205,7 +209,7 @@ val bitvector_update = pure {
   interpreter: "update",
   lem: "update_vec_dec",
   coq: "update_vec_dec",
-  lean: "vectorUpdate",
+  lean: "BitVec.update",
   _: "vector_update"
 } : forall 'n 'm, 0 <= 'm < 'n. (bits('n), int('m), bit) -> bits('n)
 $else
@@ -234,7 +238,7 @@ val add_bits = pure {
   interpreter: "add_vec",
   lem: "add_vec",
   coq: "add_vec",
-  lean: "HAdd.hAdd",
+  lean: "_lean_add",
   _: "add_bits"
 } : forall 'n. (bits('n), bits('n)) -> bits('n)
 
@@ -254,12 +258,12 @@ val sub_bits = pure {
   interpreter: "sub_vec",
   lem: "sub_vec",
   coq: "sub_vec",
-  lean: "HSub.hSub",
+  lean: "_lean_sub",
   _: "sub_bits"
 } : forall 'n. (bits('n), bits('n)) -> bits('n)
 
 val not_vec = pure {
-  ocaml: "not_vec", 
+  ocaml: "not_vec",
   lem: "not_vec",
   coq: "not_vec",
   interpreter: "not_vec",
@@ -272,7 +276,7 @@ val and_vec = pure {
   coq: "and_vec",
   ocaml: "and_vec",
   interpreter: "and_vec",
-  lean: "HAnd.hAnd",
+  lean: "_lean_bvand",
   _: "and_bits"
 } : forall 'n. (bits('n), bits('n)) -> bits('n)
 
@@ -283,7 +287,7 @@ val or_vec = pure {
   coq: "or_vec",
   ocaml: "or_vec",
   interpreter: "or_vec",
-  lean: "HOr.hOr",
+  lean: "_lean_bvor",
   _: "or_bits"
 } : forall 'n. (bits('n), bits('n)) -> bits('n)
 
@@ -294,7 +298,7 @@ val xor_vec = pure {
   coq: "xor_vec",
   ocaml: "xor_vec",
   interpreter: "xor_vec",
-  lean: "HXor.hXor",
+  lean: "_lean_bvxor",
   _: "xor_bits"
 } : forall 'n. (bits('n), bits('n)) -> bits('n)
 
@@ -343,12 +347,12 @@ $endif
 overload vector_update_subrange = {update_subrange_bits}
 
 val sail_shiftleft = pure {
-  lean: "HShiftLeft.hShiftLeft",
+  lean: "_lean_shiftl",
   _: "shiftl"} : forall 'n ('ord : Order).
     (bitvector('n, 'ord), int) -> bitvector('n, 'ord)
 
 val sail_shiftright = pure {
-  lean: "HShiftRight.hShiftRight",
+  lean: "_lean_shiftr",
   _: "shiftr"} : forall 'n ('ord : Order).
     (bitvector('n, 'ord), int) -> bitvector('n, 'ord)
 
@@ -366,7 +370,9 @@ function sail_ones(n) = not_vec(sail_zeros(n))
 // Some ARM specific builtins
 
 $ifdef _DEFAULT_DEC
-val slice = pure "slice" : forall 'n 'm 'o, 0 <= 'm & 0 <= 'n.
+val slice = pure {
+  lean: "BitVec.slice",
+  _: "slice"} : forall 'n 'm 'o, 0 <= 'm & 0 <= 'n.
   (bits('m), int('o), int('n)) -> bits('n)
 $else
 val slice = pure "slice_inc" : forall 'n 'm 'o, 0 <= 'o < 'm & 'o + 'n <= 'm.
